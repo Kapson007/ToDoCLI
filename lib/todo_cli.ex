@@ -1,4 +1,5 @@
 defmodule ToDoController do
+  import MarkupModule
   # ask user for filename
   # open file and read
   # parse the data
@@ -58,7 +59,7 @@ defmodule ToDoController do
 
   # function that load csv file then parse it and finally return map of todoitems which is pass to function that handle user commands
   # |> is the pipe operator that can handle result of function and pass it to next function
-  def load_csv() do
+  defp load_csv() do
     file = IO.gets("Enter filename: ")
             |> String.trim
 
@@ -83,7 +84,7 @@ defmodule ToDoController do
   end
 
   # function that parse data as string into map of todoitems
-  def parseData(data) do
+  defp parseData(data) do
     # split data by new line character, regex ~r{(\r\n|\r|\n)} is used to split by new line character
     # tl is used to get tail of list - here tail is list of items
     # headers is list of headers from .csv file
@@ -109,7 +110,7 @@ defmodule ToDoController do
   end
 
   # function that get parsed todolist and handle user operation in terms of prompt which user chooses
-  def getCommand(data) do
+  defp getCommand(data) do
     text =
       """
         Please choose command:
@@ -118,6 +119,7 @@ defmodule ToDoController do
         d - delete todo
         l - load file
         s - save file
+        m - eksportuj do Markdown
         q - quit
       """
     prompt =
@@ -130,6 +132,7 @@ defmodule ToDoController do
       "d" -> deleteTodo(data)
       "l" -> load_csv()
       "s" -> save_csv(data)
+      "m" -> exportToMarkdown(data)
       "q" -> IO.puts "Bye!"
       _ ->
         IO.puts("Unknown command")
@@ -258,5 +261,10 @@ defmodule ToDoController do
                           IO.puts(~s(#{:file.format_error reason}\n))
                           getCommand(data)
    end
+  end
+
+  defp exportToMarkdown(data) do
+    processDataToMarkdown(data)
+    getCommand(data)
   end
 end
