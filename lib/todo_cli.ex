@@ -1,4 +1,4 @@
-defmodule MiniToDO do
+defmodule ToDoController do
   # ask user for filename
   # open file and read
   # parse the data
@@ -61,7 +61,10 @@ defmodule MiniToDO do
   def load_csv() do
     file = IO.gets("Enter filename: ")
             |> String.trim
-    read(file)
+
+    finalPath = "./lib/resources/" <> file <> ".csv"
+
+    read(finalPath)
       |> parseData()
       |> getCommand()
   end
@@ -245,9 +248,10 @@ defmodule MiniToDO do
     # get name of file from user and trim whitespaces
     filename = IO.gets("Enter filename: ")
                 |> String.trim
+    finalPath = "./lib/resources/" <> filename <> ".csv"
     # using case save into file - function write takes filename path and data to save and returns atom :ok if saving has ended successfully or {:error, reason} when something went wrong
     # if wrong then inform user, inject reason of failure and back to user interface
-    case File.write(filename, result) do
+    case File.write(finalPath, result) do
       :ok -> IO.puts("File saved")
             getCommand(data)
       {:error, reason} -> IO.puts("Could not save file: #{reason}\n")
